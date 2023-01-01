@@ -14,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Component
 @Slf4j
 public class SseEmitters {
+
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     public SseEmitter add(SseEmitter emitter) {

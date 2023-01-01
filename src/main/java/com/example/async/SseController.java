@@ -14,6 +14,7 @@ import java.io.IOException;
 @RequestMapping("/sse")
 @RequiredArgsConstructor
 public class SseController {
+
     private final SseEmitters sseEmitters;
 
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
