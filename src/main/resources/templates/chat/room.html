@@ -9,9 +9,11 @@
 
         </ul>
     </div>
+    <button onclick="Chat__loadMore();">로드</button>
 </div>
 
 <script>
+    /*POST*/
     function fetchPost(url, data) {
         return fetch(url, {
             method: "POST",
@@ -24,6 +26,7 @@
             .then(response => response.json())
     }
 
+    /*GET*/
     function fetchGet(url, data) {
         let query = Object.keys(data)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
@@ -43,12 +46,13 @@
 <script>
     // 채팅 메세지 작성 시작
     function Chat__writeMessage(form) {
+
+        //공백 문자 제거
         form.authorName.value = form.authorName.value.trim();
 
         if (form.authorName.value.length == 0) {
             alert("작성자를 입력해주세요.");
             form.authorName.focus();
-
             return;
         }
 
@@ -56,18 +60,17 @@
 
         if (form.content.value.length == 0) {
             form.content.focus();
-
             return;
         }
-
+        //보내기
         fetchPost("/chat/writeMessage", {
             authorName: form.authorName.value,
             content: form.content.value
         })
             .then(console.log);
-
+        form.authorName.value = '';
         form.content.value = '';
-        form.content.focus();
+        form.authorName.focus();
     }
 
     // 채팅 메세지 작성 끝
@@ -79,7 +82,7 @@
 
     function Chat__loadMore() {
         fetchGet("/chat/messages", {
-            fromId: Chat__lastLoadedId
+            fromId: Chat__lastLoadedId // 0
         })
             .then(body => {
                 Chat__drawMessages(body.data.messages);
@@ -101,8 +104,10 @@
                     `<li>${message.authorName} : ${message.content}</li>`
                 );
         });
+        //Chat__loadMore();
+        setTimeout(Chat__loadMore, 500); //0.5초 후에 실행
     }
-
+    //무조건 실행
     Chat__loadMore();
 
     // SSE 연결

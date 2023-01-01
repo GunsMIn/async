@@ -51,12 +51,13 @@ public class ChatController {
         );
     }*/
 
+    /**메세지쓰기**/
     @PostMapping("/writeMessage")
     @ResponseBody
     public RsData<ChatMessage> writeMessage(@RequestBody  WriteMessageRequest req) {
         ChatMessage message = new ChatMessage(req.getAuthorName(),req.getContent());
         log.info("json : {}",req);
-
+        log.info("entity:{}",message);
         chatMessages.add(message);
 
         return new RsData(
@@ -66,17 +67,36 @@ public class ChatController {
         );
     }
 
-
+    /**내용을 가져옴**/
     @GetMapping("/messages")
     @ResponseBody
     public RsData<MessagesResponse> messages(MessagesRequest req) {
         //메세지 리스트
         log.debug("req:{}",req);
+        //subList될 저장소
+        List<ChatMessage> messages = chatMessages;
+
+        //req.getFromId 에서의 fromId값으로 !
+        if (req.getFromId() != null) {
+            // 0 부터 messageList의 size만큼의 int 생성
+            // 해당하는 인덱스를 찾고 안나오면 -1 반환
+            int index = IntStream.range(0, messages.size()) // 0부터 messageList의 size만큼 반복
+                    .filter(i -> chatMessages.get(i).getId() == req.getFromId())
+                    .findFirst() // 찾으면 멈춘다.
+                    .orElse(-1);
+            //해당 인덱스를 찾았다면
+            if (index != -1) {
+                //찾은 index 전을 날리는 것이다. 찾은 index후부터 list 에 담긴다.
+                messages = messages.subList(index + 1, messages.size());
+                // 0 1 2 3 4 ->5개
+                // 1 2 3 4 5
+            }
+        }
 
         return new RsData<>(
                 "S-1",
                 "성공",
-                new MessagesResponse(chatMessages,chatMessages.size())
+                new MessagesResponse(messages,messages.size())
         );
     }
 
@@ -118,4 +138,5 @@ public class ChatController {
                 new MessagesResponse(messages, messages.size())
         );
     }*/
+
 }

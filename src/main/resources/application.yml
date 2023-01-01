@@ -1,6 +1,9 @@
 server:
   port: 8020
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   thymeleaf:
     cache: false
     prefix: file:src/main/resources/templates/
@@ -11,4 +14,4 @@ spring:
       enabled: true
 logging:
   level:
-    com.ll.exam.app_2022_12_19__1: debug
+    com.example.async: debug
